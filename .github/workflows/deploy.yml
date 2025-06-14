@@ -31,6 +31,10 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo ${{ vars.NAMESPACE }} is the environment
+        run: |
+          RAW_TAG=${GITHUB_REF##*/}
+          IMAGE_TAG=${RAW_TAG#}
+          echo $IMAGE_TAG
+          echo ${{ vars.NAMESPACE }} is the environment
       - name: Run a one-line script2
         run: echo ${{ github.event.inputs.environment }} is the environment
