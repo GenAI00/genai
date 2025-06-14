@@ -19,10 +19,12 @@ on:
           - prod
   
 jobs:
-  deploy-dev:
-    if: inputs.environment == 'dev' || inputs.environment == 'red' || inputs.environment == 'green'
+  deploy-env:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: ${{ contains(fromJson('["red", "green", "dev"]'), github.event.inputs.environment) && 'dev' || github.event.inputs.environment }}
+
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
@@ -32,17 +34,3 @@ jobs:
         run: echo ${{ vars.NAMESPACE }} is the environment
       - name: Run a one-line script2
         run: echo ${{ github.event.inputs.environment }} is the environment
-  deploy-qa:
-      if: inputs.environment == 'qa'
-      runs-on: ubuntu-latest
-      environment: qa
-      steps:
-        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-        - uses: actions/checkout@v4
-  
-        # Runs a single command using the runners shell
-        - name: Run a one-line script
-          run: echo ${{ vars.NAMESPACE }} is the environment
-        - name: Run a one-line script2
-          run: echo ${{ github.event.inputs.environment }} is the environment
-          
